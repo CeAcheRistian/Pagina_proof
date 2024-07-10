@@ -1,25 +1,45 @@
 from flask import Flask
-from flask import request ##request es para poder consumir a traves de los pequeños clientes. se puede consumir  de 3 formas con args.get, args.form y json
-##Se puede enviar la info a traves de 3 formas, un formulario, un argunmento(lo que esta en un url) y un json
-app = Flask(__name__)#es el cliente principal
-@app.route("/") #es un decorador y con route se especifica la ruta del url
-def hello(): 
-    return "hello"
+from flask import request, render_template, redirect, flash
+import controller as c
+
+app = Flask(__name__)
+
+app.secret_key = "abcd"
+@app.route("/") 
+@app.route("/index")#tambien puede ser /index o /index/ #Entre esta linea y la funcion no puede haber espacios
+def index(): #a la raiz principal se le denomina index
+    return render_template("index.html") #se especifica el archivo html, el cual debe estar dentro de una carpeta llamada templates
+    #template es el archivo o plantilla para el rellenado de la vista
+
 
 @app.route("/hello")
-def hello2():
-    return "hi"
+def hello(): 
+    return render_template("hello.html") 
 
-@app.route("/suma/<int:num1>/<int:num2>/<int:num3>") #Se especifican las variables que se van a usar
-def suma(num1, num2,num3): #tambien en los parametros
-    num1 = request.args.get("num1", num1) #es una forma de consumir los parametros que se le mandan
-    num2 = request.args.get("num2", num2)
-    num3 = request.args.get("num3", num3)
-    return str(num1+num2+num3)
+@app.route("/add", methods= ['POST']) #Existge 4 metodos escenciaels para recibir datos, post para recibir, como un insert, GEt para mandar como un select, PUT para modificar equivalente a un update y DELETE para eliminar
+def add(): #Se tiene aque especificar el metodo por el cual se recibe, por defecto es GET
+    if request.method == 'POST':#El request es la coneccion entre el front y el back. Es la manera de consumir datos de una api o pagina web
+        nombre = request.form["usuario_id"]
+        apellido = request.form["ap_pat"]
+        contrasena = request.form["ap_mat"]
+        email = request.form["direccion"]
+        correo = request.form["correo"]
+        try: #Usualmente el ingreso de datos del formulario a la base lleva una excepcion, ya que el usuario puede ingresar datos erroneos
+            c.insert_usuarios(nombre, apellido, contrasena, email, correo)
+        except Exception as e:
+            print("Fallo, ", e)
+    flash('Usuario Creado')
+    return render_template("pelicula.html")
+
+@app.route("/crear")
+def crear_cuenta():
+    return render_template("crear_cuenta.html")
+
+@app.route("/presentar_usuarios")
+def presentar_usuarios():
+    datos= c.select_usuarios()
+
+    return render_template("presentar_usuarios.html", datos_usuario= datos)
 
 if __name__ == "__main__":
-    app.run(debug=True,port=5002) #el run es para correr el servidor, es necesario para visualizar los cambios
-    #El debug es para hacer cambios sin tener que matar el servidor, los cambios se hacen en vivo, port es para cambiar el puerto
-
-    #Existen 3 ramas de desarrollo: QA es para pruebas, Prod o PDR es lo que se manda para consumo de lado del cliente, y Dev, que es el desarrollo
-    
+    app.run(debug=True, port = 5004)
