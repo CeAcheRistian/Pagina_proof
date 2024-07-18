@@ -16,6 +16,7 @@ def index(): #a la raiz principal se le denomina index
 def hello(): 
     return render_template("hello.html") 
 
+
 @app.route("/add", methods= ['POST']) #Existge 4 metodos escenciaels para recibir datos, post para recibir, como un insert, GEt para mandar como un select, PUT para modificar equivalente a un update y DELETE para eliminar
 def add(): #Se tiene aque especificar el metodo por el cual se recibe, por defecto es GET
     if request.method == 'POST':#El request es la coneccion entre el front y el back. Es la manera de consumir datos de una api o pagina web
@@ -31,15 +32,22 @@ def add(): #Se tiene aque especificar el metodo por el cual se recibe, por defec
     flash('Usuario Creado')
     return render_template("pelicula.html")
 
+
 @app.route("/crear")
 def crear_cuenta():
     return render_template("crear_cuenta.html")
+
 
 @app.route("/presentar_usuarios")
 def presentar_usuarios():
     datos= c.select_usuarios()
 
     return render_template("presentar_usuarios.html", datos_usuario= datos)
+
+
+@app.route("/peliculas")
+def peliculas():
+    return render_template("peliculas.html")
 
 if __name__ == "__main__":
     app.run(debug=True, port = 5004)
