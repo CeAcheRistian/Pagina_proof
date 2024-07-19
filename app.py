@@ -11,6 +11,13 @@ def index(): #a la raiz principal se le denomina index
     return render_template("index.html") #se especifica el archivo html, el cual debe estar dentro de una carpeta llamada templates
     #template es el archivo o plantilla para el rellenado de la vista
 
+@app.route("/hello1")
+def hello1(): 
+    return render_template("hello.html") 
+@app.route("/hello2")
+def hello2(): 
+    return render_template("hello.html") 
+
 
 @app.route("/hello")
 def hello(): 
