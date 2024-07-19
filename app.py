@@ -49,5 +49,9 @@ def presentar_usuarios():
 def peliculas():
     return render_template("peliculas.html")
 
+
+@app.route("/ver_pelicula")
+def ver_pelicula():
+    return render_template("ver_pelicula.html")
 if __name__ == "__main__":
     app.run(debug=True, port = 5004)
